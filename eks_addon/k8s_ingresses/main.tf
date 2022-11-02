@@ -19,3 +19,10 @@ module "eks_blueprints_kubernetes_addons" {
     values     = [file("${path.cwd}/helm/nginx-values.yaml")]
   }
 }
+
+resource "kubectl_manifest" "ingress_nodeport" {
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+  yaml_body = file("${path.cwd}/manifest/ingress-nodeport.yaml")
+}

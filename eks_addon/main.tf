@@ -27,4 +27,3 @@ module "eks_blueprint_k8s_aws_managed_observability" {
   cluster_name = local.cluster_name
   region       = var.region
 }
-
