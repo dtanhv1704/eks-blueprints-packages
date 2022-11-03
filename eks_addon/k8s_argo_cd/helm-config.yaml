@@ -1,0 +1,43 @@
+configs:
+  params:
+    server.insecure: true
+  secret:
+    extra:
+      oidcClientSecret: ${oidc_client_secret}
+
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: "alb"
+    paths:
+      - /
+    hosts:
+      - ${argocd_ui_url}
+    annotations:
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/target-type: 'ip'
+      alb.ingress.kubernetes.io/scheme: 'internet-facing'
+      alb.ingress.kubernetes.io/certificate-arn: ${argocd_url_acm_arn}
+    pathType: Prefix
+  
+  config:
+    #config idp
+    url: "https://${argocd_ui_url}"
+    oidc.config: |
+      name: cognito
+      issuer: ${oidc_issuer_url}
+      clientID: ${oidc_client_id}
+      clientSecret: $oidcClientSecret
+      requestedScopes: ["openid", "profile", "email"]
+      requestedIDTokenClaims: {"groups": {"essential": true}}
+      logoutURL: ${cognito_domain}/logout?client_id=${oidc_client_id}&logout_uri=https://${argocd_ui_url}/logout
+    # disable default admin user
+    admin.enabled: "false"
+
+  #some rbac config
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      g, argo-admin, role:admin
+    scopes: '[cognito:groups]'

@@ -34,3 +34,29 @@ variable "eks" {
     })
   })
 }
+
+
+variable "enable_argocd" {
+  type = bool
+  default = false
+}
+
+variable argocd_config {
+  type = object({
+    oidc_client_secret = string
+    oidc_client_id = string
+    oidc_issuer_url = string
+    cognito_domain = string
+    argocd_ui_url = string
+    argocd_url_acm_arn = string
+  })
+
+  default = {
+    argocd_ui_url = "default"
+    argocd_url_acm_arn = "default"
+    cognito_domain = "default"
+    oidc_client_id = "default"
+    oidc_client_secret = "default"
+    oidc_issuer_url = "default"
+  }
+}
