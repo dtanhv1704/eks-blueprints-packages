@@ -48,7 +48,7 @@ module "eks_blueprints_kubernetes_addons" {
     namespace   = "argocd"
     version     = "v5.6.6"
     timeout     = "1200"
-    values      = [templatefile("${path.module}/argocd-helm-config.yaml", {
+    values      = [templatefile("${path.module}/helm-config.yaml", {
       oidc_client_secret = var.oidc_client_secret,
       oidc_client_id = var.oidc_client_id,
       oidc_issuer_url = var.oidc_issuer_url,
